@@ -7,16 +7,21 @@ import com.itextpdf.text.Paragraph
 import com.itextpdf.text.pdf.PdfReader
 import com.itextpdf.text.pdf.PdfWriter
 import com.itextpdf.text.pdf.parser.PdfTextExtractor
+import org.apache.spark.SparkConf
+import org.apache.spark.api.java.JavaSparkContext
+import org.apache.spark.input.PortableDataStream
+import org.apache.tika.metadata.Metadata
+import org.apache.tika.parser.AutoDetectParser
+import org.apache.tika.parser.ParseContext
+import org.apache.tika.sax.WriteOutContentHandler
+import scala.Tuple2
 import java.io.File
+import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
 
 
-
-/**
- * Created by istvan on 7/11/17.
- */
-class PdfParserTest {
+class PdfParser {
 
     companion object {
 
@@ -25,7 +30,30 @@ class PdfParserTest {
         @JvmStatic
         fun main(args: Array<String>) {
             //writeUsingIText()
-            readUsingIText()
+            //readUsingIText()
+            val filesPath = "/Users/adrian/Documents/*"
+            val conf = SparkConf().setAppName("TikaFileParser").setMaster("local[2]")
+            val sc = JavaSparkContext(conf)
+            val fileData = sc.binaryFiles(filesPath, 2)
+
+            fileData.foreach { t -> tikaFunc(t) }
+
+        }
+        fun tikaFunc (a: Tuple2<String, PortableDataStream>)  {
+
+            val file = File(a._1.drop(5))
+            val myParser = AutoDetectParser()
+            val stream = FileInputStream(file)
+            val handler = WriteOutContentHandler(-1)
+            val metadata = Metadata()
+            val context = ParseContext()
+
+            myParser.parse(stream, handler, metadata, context)
+
+            stream.close()
+
+            println(handler.toString())
+            println("------------------------------------------------")
         }
 
         fun writeUsingIText() {
@@ -86,5 +114,7 @@ class PdfParserTest {
             }
 
         }
+
+
     }
 }

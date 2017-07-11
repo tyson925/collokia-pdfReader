@@ -44,6 +44,8 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 dependencies {
     compile "com.itextpdf:itextpdf:${itext_version}"
+    compile "org.apache.tika:tika-core:${tika_version}"
+    compile "org.apache.tika:tika-parsers:${tika_version}"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
