@@ -53,6 +53,16 @@ dependencies {
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:$version_jackson_kotlin"
     compile "com.fasterxml.jackson.module:jackson-module-scala_${scalaVersion}:$version_jackson_scala"
 
+    compile "org.apache.spark:spark-mllib_${scalaVersion}:${version_Spark}"
+    compile "org.apache.spark:spark-sql_${scalaVersion}:${version_Spark}"
+    compile "org.apache.spark:spark-core_${scalaVersion}:${version_Spark}"
+    compile "org.apache.spark:spark-streaming_${scalaVersion}:${version_Spark}"
+
+    compile "org.elasticsearch:elasticsearch:$versionElasticSearch"
+    compile "org.elasticsearch.client:transport:$versionElasticSearch"
+    compile "org.elasticsearch:elasticsearch-spark-20_${scalaVersion}:$versionElasticSearchMR"
+
+
 
     configurations.all {
 
