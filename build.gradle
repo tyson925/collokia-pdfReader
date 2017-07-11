@@ -43,7 +43,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 //mainClassName = 'uy.com.collokia.runSparkOnEMR.jobs.KeyphraseExtractionJob'
 
 dependencies {
-    compile "com.collokia:collokia-common-util:$util_version"
+    compile "com.itextpdf:itextpdf:${itext_version}"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
