@@ -7,6 +7,7 @@ import com.itextpdf.text.Paragraph
 import com.itextpdf.text.pdf.PdfReader
 import com.itextpdf.text.pdf.PdfWriter
 import com.itextpdf.text.pdf.parser.PdfTextExtractor
+import com.snowtide.PDF
 import org.apache.spark.SparkConf
 import org.apache.spark.api.java.JavaSparkContext
 import org.apache.spark.input.PortableDataStream
@@ -14,11 +15,13 @@ import org.apache.tika.metadata.Metadata
 import org.apache.tika.parser.AutoDetectParser
 import org.apache.tika.parser.ParseContext
 import org.apache.tika.sax.WriteOutContentHandler
+import pdfts.examples.XMLOutputTarget
 import scala.Tuple2
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
+
+
+
+
 
 
 class PdfParser {
@@ -31,15 +34,37 @@ class PdfParser {
         fun main(args: Array<String>) {
             //writeUsingIText()
             //readUsingIText()
-            val filesPath = "/Users/adrian/Documents/*"
+            //readPdfWithApacheTika()
+            readUsingPDFTextStream()
+        }
+
+        fun readUsingPDFTextStream() {
+            val file = File("pdfs/pdfurl-guide.pdf")
+            val pdf = PDF.open(file)
+            println("---------Start metadata---------")
+            pdf.attributeKeys.forEach {
+                println("$it: ${pdf.getAttribute(it)}")
+            }
+            println("---------End metadata---------")
+            val xmlOutputTarget = XMLOutputTarget()
+            pdf.pipe(xmlOutputTarget)
+            val buffer = StringWriter()
+            buffer.write(xmlOutputTarget.xmlAsString)
+            pdf.close()
+            println(buffer.toString())
+            buffer.close()
+        }
+
+        fun readPdfWithApacheTika() {
+            val filesPath = "pdfs/*"
             val conf = SparkConf().setAppName("TikaFileParser").setMaster("local[2]")
             val sc = JavaSparkContext(conf)
             val fileData = sc.binaryFiles(filesPath, 2)
 
             fileData.foreach { t -> tikaFunc(t) }
-
         }
-        fun tikaFunc (a: Tuple2<String, PortableDataStream>)  {
+
+        private fun tikaFunc (a: Tuple2<String, PortableDataStream>)  {
 
             val file = File(a._1.drop(5))
             val myParser = AutoDetectParser()
@@ -52,7 +77,7 @@ class PdfParser {
 
             stream.close()
 
-            println(handler.toString())
+            println(metadata.toString())
             println("------------------------------------------------")
         }
 

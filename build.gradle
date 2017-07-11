@@ -46,6 +46,7 @@ dependencies {
     compile "com.itextpdf:itextpdf:${itext_version}"
     compile "org.apache.tika:tika-core:${tika_version}"
     compile "org.apache.tika:tika-parsers:${tika_version}"
+    compile "com.snowtide:pdfxstream:${pdf_text_stream_version}"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
@@ -89,6 +90,10 @@ dependencies {
 
 
 repositories {
+
+    maven {
+        url "http://maven.snowtide.com/releases"
+    }
     maven {
         url "https://collokia.artifactoryonline.com/collokia/collokia-internal"
         credentials {
